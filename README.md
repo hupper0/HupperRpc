@@ -1,52 +1,91 @@
-# NettyRpc
-An RPC framework based on Netty, ZooKeeper and Spring  
-中文详情：[Chinese Details](http://www.cnblogs.com/luxiaoxun/p/5272384.html)
-### Features:
-* Simple code and framework
-* Non-blocking asynchronous call and Synchronous call support
-* Long lived persistent connection
-* High availability, load balance and failover
-* Service Discovery support by ZooKeeper
-### Design:
-![design](https://images2015.cnblogs.com/blog/434101/201603/434101-20160316102651631-1816064105.png)
-### How to use
-1. Define an interface:
+###轻量级rpc框架——HupperRPC
+####一、Project introduction：
+* Spring manages the whole object, netty is responsible for message communication, and zookeeper is responsible for managing service registration.
+* Support for asynchronous call service, support for callback function
+* The client uses long connections.
+* Server asynchronous multithread processing RPC request
 
-		public interface HelloService { 
-			String hello(String name); 
-			String hello(Person person);
-		}
+####二、Project structure：
+* Service publishing and subscription：The server uses Zookeeper to register the service address, and the client gets the available service address from Zookeeper.
+* Spring：Using Spring configuration service, loading Bean, scanning notes。
+* dynamic proxy：The client uses dynamic proxy mode to transparently invoke the service.
 
-2. Implement the interface with annotation @RpcService:
+![Alt text](pic/rpc1.jpg)
 
-		@RpcService(HelloService.class)
-		public class HelloServiceImpl implements HelloService {
-			public HelloServiceImpl(){}
-			
-			@Override
-			public String hello(String name) {
-				return "Hello! " + name;
-			}
 
-			@Override
-			public String hello(Person person) {
-				return "Hello! " + person.getFirstName() + " " + person.getLastName();
-			}
-		}
+####三、Server publishing service
+* Annotate services to be published using annotations
 
-3. Run zookeeper
+```
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Component
+public @interface RpcService {
+    Class<?> value();
+}
+```
+* A service interface:
 
-   For example: zookeeper is running on 127.0.0.1:2181
+```
+public interface HelloService {
 
-4. Start server:
+    String hello(String name);
 
-   Start server with spring: RpcBootstrap
+    String hello(Person person);
+}
+```
 
-   Start server without spring: RpcBootstrapWithoutSpring
+* A service implementation: using annotation annotation
 
-5. Use the client:
- 
-		ServiceDiscovery serviceDiscovery = new ServiceDiscovery("127.0.0.1:2181");
+```
+@RpcService(HelloService.class)
+public class HelloServiceImpl implements HelloService {
+
+    @Override
+    public String hello(String name) {
+        return "Hello! " + name;
+    }
+
+    @Override
+    public String hello(Person person) {
+        return "Hello! " + person.getFirstName() + " " + person.getLastName();
+    }
+}
+```
+* When the service is started, all the service interfaces and their implementation are scanned.
+
+```
+	@Override
+    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+        Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class);
+        if (MapUtils.isNotEmpty(serviceBeanMap)) {
+            for (Object serviceBean : serviceBeanMap.values()) {
+                String interfaceName = serviceBean.getClass().getAnnotation(RpcService.class).value().getName();
+                handlerMap.put(interfaceName, serviceBean);
+            }
+        }
+    }
+```
+* test code  
+
+```
+   /**
+   RpcClient 属于rpc框架内部一个类，可直接spring注入
+   */
+ 	@Autowired
+    private RpcClient rpcClient;
+
+    @Test
+    public void helloTest() {
+        HelloService helloService = rpcClient.create(HelloService.class);
+        String result = helloService.hello("World");
+        Assert.assertEquals("Hello! World", result);
+    }
+   
+```
+```
+
+ 		ServiceDiscovery serviceDiscovery = new ServiceDiscovery("127.0.0.1:2181");
 		final RpcClient rpcClient = new RpcClient(serviceDiscovery);
 		// Sync call
 		HelloService helloService = rpcClient.create(HelloService.class);
@@ -55,3 +94,33 @@ An RPC framework based on Netty, ZooKeeper and Spring
 		IAsyncObjectProxy client = rpcClient.createAsync(HelloService.class);
 		RPCFuture helloFuture = client.call("hello", "World");
    		String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
+
+```
+
+#### Performance improvement
+* 1、Server request asynchronous processing. 
+	*  Netty itself is a high-performance network framework, and there is not much problem in terms of network IO. From the RPC framework itself, the server-side processing of requests is changed to multithreaded asynchrony on the basis of the original.
+* 2、Management of service end connection
+	* The client maintains a long connection with the service, does not need to connect every time the service is invoked, and manages the long connection (through Zookeeper to get a valid address).By monitoring the changes in the value of Zookeeper service nodes, the long connections between the client and the server are dynamically updated. This is now done on the client side, which maintains a long connection to all available services, putting pressure on both the client and the server to decouple the implementation. 
+* 3、Client request asynchronous processing
+	* The client requests support for asynchronous processing without synchronous waiting: Sends an asynchronous request, returns the Feature, and gets the result through the Feature's callback mechanism 
+
+
+
+
+#### Wait for updates
+* Multi protocol support for encoding serialization.
+* Zookeeper built in service internally，Simplified deployment
+
+
+
+
+
+
+
+
+
+
+
+
+
