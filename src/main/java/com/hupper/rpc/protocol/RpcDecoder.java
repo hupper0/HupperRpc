@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * RPC Decoder
  *
- * @author huangyong
+ * @author lvhongpeng
  */
 public class RpcDecoder extends ByteToMessageDecoder {
 

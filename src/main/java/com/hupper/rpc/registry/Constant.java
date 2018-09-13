@@ -3,7 +3,7 @@ package com.hupper.rpc.registry;
 /**
  * ZooKeeper constant
  *
- * @author huangyong
+ * @author lvhongpeng
  */
 public interface Constant {
 

@@ -3,7 +3,7 @@ package com.hupper.rpc.protocol;
 /**
  * RPC Response
  *
- * @author huangyong
+ * @author lvhongpeng
  */
 public class RpcResponse {
     private String requestId;
