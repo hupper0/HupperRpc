@@ -1,11 +1,12 @@
-###轻量级rpc框架——HupperRPC
-####一、Project introduction：
+### 轻量级rpc框架——HupperRPC
+
+#### 一、Project introduction：
 * Spring manages the whole object, netty is responsible for message communication, and zookeeper is responsible for managing service registration.
 * Support for asynchronous call service, support for callback function
 * The client uses long connections.
 * Server asynchronous multithread processing RPC request
 
-####二、Project structure：
+#### 二、Project structure：
 * Service publishing and subscription：The server uses Zookeeper to register the service address, and the client gets the available service address from Zookeeper.
 * Spring：Using Spring configuration service, loading Bean, scanning notes。
 * dynamic proxy：The client uses dynamic proxy mode to transparently invoke the service.
@@ -13,7 +14,7 @@
 ![Alt text](pic/rpc1.jpg)
 
 
-####三、Server publishing service
+#### 三、Server publishing service
 * Annotate services to be published using annotations
 
 ```
