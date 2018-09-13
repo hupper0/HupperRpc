@@ -1,7 +1,7 @@
 package com.hupper.rpc.test.app;
 
 /**
- * Created by luxiaoxun on 2016/3/16.
+ * Created by lvhongpeng on 2016/3/16.
  */
 public class BenchmarkAsync {
     public static void main(String[] args) throws InterruptedException {

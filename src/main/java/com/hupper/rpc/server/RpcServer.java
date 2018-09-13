@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * RPC Server
  *
- * @author huangyong, luxiaoxun
+ * @author huangyong, lvhongpeng
  */
 @Service
 public class RpcServer implements ApplicationContextAware, InitializingBean {

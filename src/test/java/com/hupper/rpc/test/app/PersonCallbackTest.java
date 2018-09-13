@@ -1,7 +1,7 @@
 package com.hupper.rpc.test.app;
 
 /**
- * Created by luxiaoxun on 2016/3/17.
+ * Created by lvhongpeng on 2016/3/17.
  */
 public class PersonCallbackTest {
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
 package com.hupper.rpc.test.app;
 
 /**
- * Created by luxiaoxun on 2016-03-11.
+ * Created by lvhongpeng on 2016-03-11.
  */
 public class Benchmark {
 
