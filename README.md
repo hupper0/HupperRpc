@@ -1,20 +1,20 @@
 ### 轻量级rpc框架——HupperRPC
 
 #### 一、Project introduction：
-* Spring manages the whole object, netty is responsible for message communication, and zookeeper is responsible for managing service registration.
-* Support for asynchronous call service, support for callback function
+* Spring manages the whole object, netty is responsible for message communication, and zookeeper is responsible for managing com.hupper.rpc.service registration.
+* Support for asynchronous call com.hupper.rpc.service, support for callback function
 * The client uses long connections.
 * Server asynchronous multithread processing RPC request
 
 #### 二、Project structure：
-* Service publishing and subscription：The server uses Zookeeper to register the service address, and the client gets the available service address from Zookeeper.
-* Spring：Using Spring configuration service, loading Bean, scanning notes。
-* dynamic proxy：The client uses dynamic proxy mode to transparently invoke the service.
+* Service publishing and subscription：The server uses Zookeeper to register the com.hupper.rpc.service address, and the client gets the available com.hupper.rpc.service address from Zookeeper.
+* Spring：Using Spring configuration com.hupper.rpc.service, loading Bean, scanning notes。
+* dynamic proxy：The client uses dynamic proxy mode to transparently invoke the com.hupper.rpc.service.
 
 ![Alt text](pic/rpc1.jpg)
 
 
-#### 三、Server publishing service
+#### 三、Server publishing com.hupper.rpc.service
 * Annotate services to be published using annotations
 
 ```
@@ -25,7 +25,7 @@ public @interface RpcService {
     Class<?> value();
 }
 ```
-* A service interface:
+* A com.hupper.rpc.service interface:
 
 ```
 public interface HelloService {
@@ -36,7 +36,7 @@ public interface HelloService {
 }
 ```
 
-* A service implementation: using annotation annotation
+* A com.hupper.rpc.service implementation: using annotation annotation
 
 ```
 @RpcService(HelloService.class)
@@ -53,7 +53,7 @@ public class HelloServiceImpl implements HelloService {
     }
 }
 ```
-* When the service is started, all the service interfaces and their implementation are scanned.
+* When the com.hupper.rpc.service is started, all the com.hupper.rpc.service interfaces and their implementation are scanned.
 
 ```
 	@Override
@@ -101,8 +101,8 @@ public class HelloServiceImpl implements HelloService {
 #### Performance improvement
 * 1、Server request asynchronous processing. 
 	*  Netty itself is a high-performance network framework, and there is not much problem in terms of network IO. From the RPC framework itself, the server-side processing of requests is changed to multithreaded asynchrony on the basis of the original.
-* 2、Management of service end connection
-	* The client maintains a long connection with the service, does not need to connect every time the service is invoked, and manages the long connection (through Zookeeper to get a valid address).By monitoring the changes in the value of Zookeeper service nodes, the long connections between the client and the server are dynamically updated. This is now done on the client side, which maintains a long connection to all available services, putting pressure on both the client and the server to decouple the implementation. 
+* 2、Management of com.hupper.rpc.service end connection
+	* The client maintains a long connection with the com.hupper.rpc.service, does not need to connect every time the com.hupper.rpc.service is invoked, and manages the long connection (through Zookeeper to get a valid address).By monitoring the changes in the value of Zookeeper com.hupper.rpc.service nodes, the long connections between the client and the server are dynamically updated. This is now done on the client side, which maintains a long connection to all available services, putting pressure on both the client and the server to decouple the implementation. 
 * 3、Client request asynchronous processing
 	* The client requests support for asynchronous processing without synchronous waiting: Sends an asynchronous request, returns the Feature, and gets the result through the Feature's callback mechanism 
 
@@ -111,7 +111,7 @@ public class HelloServiceImpl implements HelloService {
 
 #### Wait for updates
 * Multi protocol support for encoding serialization.
-* Zookeeper built in service internally，Simplified deployment
+* Zookeeper built in com.hupper.rpc.service internally，Simplified deployment
 
 
 

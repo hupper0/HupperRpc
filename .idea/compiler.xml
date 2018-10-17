@@ -7,7 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="HupperRpc" />
+        <module name="ClientTest" />
+        <module name="common" />
+        <module name="provider" />
       </profile>
     </annotationProcessing>
   </component>

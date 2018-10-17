@@ -1,0 +1,7 @@
+server:
+  port: 8129
+  error:
+    path: /err
+rpc:
+  registryAddress: 127.0.0.1:2181
+  serverAddress: 127.0.0.1:18866

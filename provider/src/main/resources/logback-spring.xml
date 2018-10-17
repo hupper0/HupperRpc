@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%date] [%level] [%thread] [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="serverFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${project.home}/logs/server.log</file>
+        <encoder>
+            <pattern>[%date] [%level] [%thread] [%file : %line] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${project.home}/logs/rpc.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="org" level="WARN"/>
+    <logger name="org.springframework" level="INFO">
+        <appender-ref ref="serverFile"/>
+    </logger>
+    <logger name="com.hupper.rpc" level="INFO">
+        <appender-ref ref="serverFile"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+    </root>
+</configuration>
